@@ -1,0 +1,178 @@
+<h3>Dependencies</h3>
+- Bootstrap 3 <br>
+- AngularJS, AngularJS Sanitize<br>
+<hr>
+<h3>Attributes</h3>
+<table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Attribute Name</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>ng-model</strong>
+                </td>
+                <td>Array</td>
+                <td>The array that will contain the model for the selected items in the dropdown.</td>
+            </tr>
+            <tr>
+                <td><strong>settings</strong>
+                </td>
+                <td>Object</td>
+                <td>The options for the dropdown.</td>
+            </tr>
+            <tr>
+                <td><strong>text-settings</strong>
+                </td>
+                <td>Object</td>
+                <td>Gives the ability to modify the default texts in the directive.</td>
+            </tr>
+        </tbody>
+    </table>
+	<hr />
+<h3><mark>settings</mark> Attribute</h3>
+
+<table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Property</th>
+                <th>Type</th>
+				<th>Require</th>
+				<th>Default Value</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>sourceData</strong>
+                </td>
+                <td>String / Array / Function</td>
+				<td>x</td>
+				<td></td>
+                <td>Data that will bind to the dropdown.</td>
+            </tr>
+            <tr>
+                <td><strong>nameMember</strong></td>
+                <td>String</td>
+				<td></td>
+				<td>name</td>
+                <td>The property name of data that contains the value used to display for each items in dropdown.</td>
+            </tr>
+            <tr>
+                <td><strong>childrenMember</strong>
+                </td>
+                <td>String</td>
+				<td></td>
+				<td>children</td>
+                <td>The property name of data that contains a list of sub items (if you need multi-level dropdown).</td>
+            </tr>
+			<tr>
+                <td><strong>templateUrl</strong>
+                </td>
+                <td>String</td>
+				<td>x</td>
+				<td></td>
+                <td>The url to the dropdown template file.</td>
+            </tr>
+			<tr>
+                <td><strong>hasFilter</strong>
+                </td>
+                <td>Boolean</td>
+				<td></td>
+				<td>true</td>
+                <td>Show or hide the filter.</td>
+            </tr>
+			
+			<tr>
+                <td><strong>hasToolbar</strong>
+                </td>
+                <td>Boolean</td>
+				<td></td>
+				<td>true</td>
+                <td>Show or hide the toolbar.</td>
+            </tr>
+			<tr>
+                <td><strong>itemFormatter</strong>
+                </td>
+                <td>String / Function</td>
+				<td></td>
+				<td></td>
+                <td>Provide a way to format items in dropdown. The value can be a function (value, item, level), or a filter name (built-in or custom) such as "uppercase", "lowercase",....</td>
+            </tr>
+        </tbody>
+    </table>
+	<hr />
+	<h3><mark>text-settings</mark> Attribute</h3>
+<table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Property</th>
+				<th>Default Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Filter</strong>
+                </td>
+				<td>Filter</td>
+            </tr>
+            <tr>
+                <td><strong>CheckAll</strong></td>
+				<td>Check all</td>
+            </tr>
+            <tr>
+                <td><strong>CollapseExpanse</strong>
+                </td>
+				<td>Collapse/Expanse</td>
+            </tr>
+			<tr>
+                <td><strong>CollapseBranch</strong>
+                </td>
+				<td>Collapse/Expanse this branch</td>
+            </tr>
+			<tr>
+                <td><strong>NoItemChecked</strong>
+                </td>
+				<td>Select options</td>
+            </tr>
+			<tr>
+                <td><strong>ItemsSelected</strong>
+                </td>
+				<td># selected</td>
+            </tr>
+        </tbody>
+    </table>
+	<hr />
+	<h3>Events</h3>
+<table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Event Name</th>
+				<th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>ng-change</strong>
+                </td>
+				<td>Fired when selecting an item.</td>
+            </tr>
+            <tr>
+                <td><strong>ng-on-checkall</strong></td>
+				<td>Fired when checking/unchecking the 'Check All' box.</td>
+            </tr>
+            <tr>
+                <td><strong>ng-on-open</strong>
+                </td>
+				<td>Fired when the dropdown opens.</td>
+            </tr>
+			<tr>
+                <td><strong>ng-on-close</strong>
+                </td>
+				<td>Fired when the dropdown closes.</td>
+            </tr>
+        </tbody>
+    </table>

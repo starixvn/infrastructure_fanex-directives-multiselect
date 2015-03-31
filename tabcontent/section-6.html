@@ -1,0 +1,98 @@
+<div class="row ng-scope">
+	<div class="col-xs-12">
+		<h3>Demo 1 - Using filter name (built-in or custom)</h3>
+		<div class="well">
+			<!--<button ng-click="showFilter()">ass</button>-->
+			<div style="height: 25px">
+				 <dropdowntree class="col-xs-5" 
+					  ng-model="selectedItems6" 
+					  data-settings="settings6"></dropdowntree>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-12 col-sm-6">
+
+	</div>
+</div>
+<div class="row ng-scope">
+	<div class="col-md-12">
+		<h3>Code</h3>
+		<div class="well">
+			<div>
+				<div hljs="">
+	<pre><code class="hljs bash">// HTML
+&lt;dropdowntree class=&quot;col-xs-5&quot; 
+	  ng-model=&quot;selectedItems6&quot; 
+	  data-settings=&quot;settings6&quot;&gt;&lt;/dropdowntree&gt;
+	  
+// Javascript
+
+app.filter("myItemFilter", function(){
+		return function(value, item, level){
+				return item.text + " - " + item.value;
+		};
+	});
+	
+$scope.settings6 = {
+  nameMember: "text",
+  childrenMember: "items",
+  sourceData: data,
+  itemFormatter: "myItemFilter",
+  templateUrl: templateUrl
+};
+			</code></pre>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>		
+	
+<div class="row ng-scope">
+	<div class="col-xs-12">
+		<h3>Demo 2 - Using function</h3>
+		<div class="well">
+			<!--<button ng-click="showFilter()">ass</button>-->
+			<div style="height: 25px">
+				 <dropdowntree class="col-xs-5" 
+					  ng-model="selectedItems7" 
+					  data-settings="settings7"></dropdowntree>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-12 col-sm-6">
+
+	</div>
+</div>
+<div class="row ng-scope">
+	<div class="col-md-12">
+		<h3>Code</h3>
+		<div class="well">
+			<div>
+				<div hljs="">
+	<pre><code class="hljs bash">// HTML
+&lt;dropdowntree class=&quot;col-xs-5&quot; 
+	  ng-model=&quot;selectedItems6&quot; 
+	  data-settings=&quot;settings7&quot;&gt;&lt;/dropdowntree&gt;
+	  
+// Javascript
+$scope.settings6 = {
+  nameMember: "text",
+  childrenMember: "items",
+  sourceData: data,
+  itemFormatter: function(value, item, level){
+	if(item.items && item.items.length > 0)
+	{
+		return value + &quot; (&lt;mark&gt;&quot; + item.items.length + &quot;&lt;/mark&gt;)&quot;;
+	}
+	
+	return value;
+  },
+  templateUrl: templateUrl
+};
+			</code></pre>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>		
+	

@@ -1,0 +1,154 @@
+
+.glyphicon-none:before
+{
+    content: "\2122";
+    color: transparent !important;
+}
+
+dropdowntree
+{
+    display: block;
+    min-width: 200px;
+}
+dropdowntree .btn-group
+{
+    width: 100%;
+}
+dropdowntree .searchclear
+{
+    position: absolute;
+    display: block;
+    top: 8px;
+    font-size: 16px;
+    right: 0px;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    color: #ccc;
+    z-index: 100;
+}
+dropdowntree button .caret
+{
+    position: absolute;
+    right: 5px;
+    top: 10px;
+}
+dropdowntree span, dropdowntree a
+{
+    font-size: 9pt;
+    color: #4f4f4f;
+    line-height: 9pt;
+}
+dropdowntree a.demo *
+{
+    color: red;
+}
+dropdowntree .dropdown-menu .glyphicon
+{
+    margin-right: 5px;
+}
+dropdowntree .btn
+{
+    width: 100%;
+    background-color: #FFF;
+}
+dropdowntree .dropdown
+{
+    border: 1px solid #e5e5e5;
+    border-radius: 1px;
+}
+dropdowntree .dropdown-menu
+{
+    min-width: 250px;
+    max-height: 600px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 2px;
+}
+dropdowntree .dropdown-menu .disabled, dropdowntree .dropdown-menu .disabled *
+{
+    color: #aaa;
+}
+dropdowntree .dropdown-menu a
+{
+    cursor: pointer;
+    text-decoration: none;
+}
+dropdowntree .dropdown-menu .nodehanbler
+{
+    cursor: pointer;
+}
+dropdowntree .dropdown-menu .divider
+{
+    margin: 1px;
+}
+dropdowntree .tree
+{
+    max-height: 500px;
+    min-height: 50px;
+    overflow-y: auto;
+    padding-bottom: 30px;
+}
+dropdowntree .tree ul
+{
+    padding-left: 5px;
+}
+dropdowntree .tree li
+{
+    list-style-type: none;
+    margin: 0;
+    padding: 10px 5px 0 5px;
+    position: relative;
+    line-height: 9pt;
+}
+dropdowntree .tree li.divider
+{
+    height: 1px;
+    padding: 1px;
+}
+dropdowntree .tree li::before, .tree li::after
+{
+    content: '';
+    left: -20px;
+    position: absolute;
+    right: auto;
+}
+dropdowntree .tree li::before
+{
+    border-left: 1px solid #999;
+    bottom: 50px;
+    height: 100%;
+    top: 0;
+    width: 1px;
+}
+dropdowntree .tree li::after
+{
+    border-top: 1px solid #999;
+    height: 20px;
+    top: 17px;
+    width: 25px;
+}
+dropdowntree .tree li span
+{
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    display: inline-block;
+    text-decoration: none;
+}
+dropdowntree .tree li.parent_li > span
+{
+    cursor: pointer;
+}
+dropdowntree .tree > ul > li::before, .tree > ul > li::after
+{
+    border: 0;
+}
+dropdowntree .tree li:last-child::before
+{
+    height: 30px;
+}
+dropdowntree .tree li.parent_li > span:hover, .tree li.parent_li > span:hover + ul li span
+{
+    background: #eee;
+    border: 1px solid #94a0b4;
+}
