@@ -76,7 +76,7 @@ app.controller('DemoController', function ($scope) {
 	$scope.settings2 = {
 	  nameMember: "text",
       // dataMember: "records",
-	  sourceData: "data/test.json"
+	  sourceData: "demos/data/test.json"
 	};
 	
 	$scope.settings3 = {
