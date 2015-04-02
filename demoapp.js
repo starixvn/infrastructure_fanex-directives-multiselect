@@ -1,32 +1,4 @@
-var app = angular.module('DemoApp', ['fanex.ng.dropdowntree']);
-app.run(function($rootScope, $templateCache) {
-   $rootScope.$on('$viewContentLoaded', function() {
-      $templateCache.removeAll();
-   });
-});
-app.filter("myItemFilter", function(){
-		return function(value, item, level){
-				return item.text + " - " + item.value;
-		};
-	});
-app.controller('DemoController', function ($scope) {
-	var templateUrl = "src/fanex.directive.dropdowntree.template.html?v=" + new Date().getTime(); 
-    $scope.hasFilter = true;
-    $scope.showFilter = function () {
-        //$scope.hasFilter = true;
-       // $scope.data[0].disabled = true;
-       	//$scope.textSettings.NoItemChecked = "aaaaaaaaaaa";
-       //	$scope.settings1.hasFilter = false;
-	   // $scope.settings2.hasFilter = false;
-	   $scope.settings1.sourceData[0].text = "aaaaaaaaaaaaaaaa";
-	  // console.log("a");
-    };
-	
-	$scope.selectedItemChange = function(){
-		alert(1);
-	};
-
-    var data = [
+var data = [
 		{
 			value: 1, 
 			text: 'Asia',
@@ -56,20 +28,54 @@ app.controller('DemoController', function ($scope) {
 		{value:3, text: 'Africa'}
 	];
 	
+
+var app = angular.module('DemoApp', ['fanex.ng.dropdowntree']);
+app.config(function(dropdowntreeConfigProvider){
+    dropdowntreeConfigProvider.set({
+        nameMember: "text",
+        childrenMember: "items",
+        templateUrl: "src/fanex.directive.dropdowntree.template.html?v=" + new Date().getTime(),
+        sourceData: data
+    });
+});
+app.run(function($rootScope, $templateCache) {
+   $rootScope.$on('$viewContentLoaded', function() {
+      $templateCache.removeAll();
+   });
+});
+app.filter("myItemFilter", function(){
+		return function(value, item, level){
+				return item.text + " - " + item.value;
+		};
+	});
+app.controller('DemoController', function ($scope) {
+	var templateUrl = "src/fanex.directive.dropdowntree.template.html?v=" + new Date().getTime(); 
+    $scope.hasFilter = true;
+    $scope.showFilter = function () {
+       // $scope.hasFilter = true;
+       // $scope.data[0].disabled = true;
+       // $scope.textSettings.NoItemChecked = "aaaaaaaaaaa";
+       // $scope.settings1.hasFilter = false;
+	   // $scope.settings2.hasFilter = false;
+	   $scope.settings1.sourceData[0].text = "aaaaaaaaaaaaaaaa";
+    };
+	
+	$scope.selectedItemChange = function(){
+		alert(1);
+	};
+
+    
 	$scope.selectedItems = [];
 	
 	$scope.settings1 = {
-	  nameMember: "text",
-	  childrenMember: "items",
-	  sourceData: data,
-	  templateUrl: templateUrl
+	  sourceData: data
+        //,templateUrl: templateUrl
 	};
 	
 	$scope.settings2 = {
-	  nameMember: "Name",
-        dataMember: "records",
-	  sourceData: "a   http://www.w3schools.com/website/Customers_JSON.php",
-	  templateUrl: templateUrl
+	  nameMember: "text",
+      // dataMember: "records",
+	  sourceData: "data/test.json"
 	};
 	
 	$scope.settings3 = {
@@ -77,16 +83,14 @@ app.controller('DemoController', function ($scope) {
 	  childrenMember: "items",
 	  sourceData: function(){
 		  return data;
-	  },
-	  templateUrl: templateUrl
+	  }
 	};
 		
 	$scope.settings6 = {
 	  nameMember: "text",
 	  childrenMember: "items",
 	  sourceData: data,
-	  itemFormatter: "myItemFilter",
-	  templateUrl: templateUrl
+	  itemFormatter: "myItemFilter"
 	};
 	
 	$scope.settings7 = {
@@ -100,8 +104,7 @@ app.controller('DemoController', function ($scope) {
 		}
 		
 		return value;
-	  },
-	  templateUrl: templateUrl
+	  }
 	};
 
 	$scope.textSettings = {

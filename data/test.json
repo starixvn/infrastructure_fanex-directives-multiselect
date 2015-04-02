@@ -1,0 +1,24 @@
+[
+    {
+        "value": 1,
+        "text": "Asia",
+        "cssClass": "demo"        
+    },
+    {
+        "value": 2,
+        "text": "Europe"        
+    },
+    {
+        "value": 3,
+        "text": "Africa"
+    },    
+    {
+        "value": 4,
+        "text": "SoutheastAsia"
+    },
+    {
+        "value": 5,
+        "text": "Japan",
+        "checked": true
+    }
+]

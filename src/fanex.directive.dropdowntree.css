@@ -10,15 +10,22 @@ dropdowntree
     display: block;
     min-width: 200px;
 }
-dropdowntree .btn-group
-{
-    width: 100%;
+dropdowntree .filter {
+  display: block;
+  width: 100%;
+  height: 30px;
+  padding: 6px 12px;
+  color: #555;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
+
 dropdowntree .searchclear
 {
     position: absolute;
     display: block;
-    top: 8px;
+    top: 9px;
     font-size: 16px;
     right: 0px;
     width: 16px;

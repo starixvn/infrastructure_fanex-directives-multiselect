@@ -4,10 +4,29 @@ angular.module('fanex.ng.dropdowntree', ['ngSanitize'])
 	        return formatCallback ? formatCallback(value, item.model, level) : value;
 	    };
 	})
-
-  .directive('dropdowntree', ['$parse', '$compile', '$http', '$filter',
-    function ($parse, $compile, $http, $filter) {
-
+ .provider('dropdowntreeConfig', function () {
+    var config = { 
+        hasFilter: true,
+        hasToolbar: true,
+        nameMember: "name",
+        dataMember: null,
+        childrenMember: "children",
+        itemFormatter: null,
+        templateUrl: "fanex.directive.dropdowntree.template.html",
+        sourceData: null,
+        sourceUrl: null
+    };
+    return {
+      set: function (options) {
+        angular.extend(config, options);
+      },
+      $get: function () {
+        return angular.extend({}, config);
+      }
+    };
+  })
+  .directive('dropdowntree', ['$parse', '$compile', '$http', '$filter','dropdowntreeConfig',
+    function ($parse, $compile, $http, $filter, dropdowntreeConfig) {
         function containsText(item, searchText) {
 
             var found = item.label.toLowerCase().indexOf(searchText.toLowerCase()) > -1;
@@ -90,13 +109,13 @@ angular.module('fanex.ng.dropdowntree', ['ngSanitize'])
             require: 'ngModel',
             scope: {
                 selectedItems: "=ngModel",
-                settings: "=",
+                settings: "=?",
                 textSettings: "=?",
                 ngOnCheckall: "&",
                 ngOnOpen: "&",
                 ngOnClose: "&"
             },
-            link: function (scope, element, attrs, modelCtrl) {
+            link: function (scope, element, attrs, modelCtrl) {                
                 var required = attrs.required || attrs.ngRequired;
                 //  var changeHandler = scope.ngChange || angular.noop;// $parse(attrs.change)(scope) || angular.noop;
                 var onCheckAllHandler = scope.ngOnCheckall || angular.noop;
@@ -196,21 +215,7 @@ angular.module('fanex.ng.dropdowntree', ['ngSanitize'])
                 });
 
                 scope.$watch("settings", function (newVal) {
-                    if (angular.isDefined(newVal)) {
-                        var defaultSettings = {
-                            hasFilter: true,
-                            hasToolbar: true,
-                            nameMember: "name",
-                            dataMember: null,
-                            childrenMember: "children",
-                            itemFormatter: null,
-                            templateUrl: "fanex.dropdowntree.template.html",
-                            sourceData: null,
-                            sourceUrl: null
-                        };
-
-                        scope._settings = angular.extend(defaultSettings, scope.settings);
-
+                        scope._settings = angular.extend({}, dropdowntreeConfig, scope.settings);
                         if (typeof scope._settings.itemFormatter === "string") {
                             var filterInstance = $filter(scope._settings.itemFormatter);
                             scope._settings.itemFormatter = function (value, item, level) {
@@ -231,17 +236,15 @@ angular.module('fanex.ng.dropdowntree', ['ngSanitize'])
                         } else if (sourceDataType === "function") // function
                         {
                             scope._settings.sourceData = scope._settings.sourceData();
-
                             parseData();
                         }
                         else {
                             parseData();
                         }
-                    }
+                    
                 }, true);
 
-                scope.$watch("textSettings", function (newVal) {
-                    //  if (angular.isDefined(newVal)) {
+                scope.$watch("textSettings", function (newVal) {                
                     var defaultTextSettings = {
                         Filter: "Filter",
                         CheckAll: "Check all",
@@ -253,7 +256,6 @@ angular.module('fanex.ng.dropdowntree', ['ngSanitize'])
 
                     scope._textSettings = angular.extend(defaultTextSettings, scope.textSettings);
                     scope.header = getHeaderText(scope.selectedItems);
-                    // }
                 }, true);
 
                 //watch model change
@@ -330,7 +332,7 @@ angular.module('fanex.ng.dropdowntree', ['ngSanitize'])
           replace: true,
           scope: false,
           // templateUrl: 'fanex.dropdowntree.template.html',
-          template: '<div><div ng-include="settings.templateUrl"></div><div>',
+          template: '<div><div ng-include="_settings.templateUrl"></div><div>',
           link: function (scope, element, attrs, ctrl) {
               var onOpenHandler = scope.ngOnOpen || angular.noop;
               var onCloseHandler = scope.ngOnClose || angular.noop;

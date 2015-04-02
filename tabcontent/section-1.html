@@ -5,7 +5,7 @@
 					<div style="height: 25px">
 						 <dropdowntree class="col-xs-5"
 							  ng-model="selectedItems1" 
-							  settings="settings1"></dropdowntree>
+							  ></dropdowntree>
 					</div>
 				</div>
 			</div>
@@ -27,6 +27,36 @@
 	settings=&quot;settings1&quot;&quot;&gt;&lt;/dropdowntree&gt;
 
 // JavaScript
+var data = [
+		{
+			value: 1, 
+			text: 'Asia',
+			cssClass: "demo",
+			items:[
+				{
+				    value: 11, text: 'Southeast Asia',
+					items: [{ value: 111, text: 'Vietnam'}]
+				},
+				{value: 12, text: 'Japan', checked: true}
+			]
+		},
+		{
+			value:2, text: 'Europe',
+			items:[
+				{value:21, text: 'Spain', disabled: true},
+				{
+				    value: 22, text: 'Western Europe',
+				    items: [
+                        { value: 221, text: 'France' },
+                        { value: 222, text: 'Italy' },
+				    ]
+				},
+				{ value: 23, text: 'Turkey' }
+			]
+		},
+		{value:3, text: 'Africa'}
+	];
+    
  $scope.settings1 = {
 	  nameMember: "text",
 	  childrenMember: "items",
