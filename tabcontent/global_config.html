@@ -1,16 +1,24 @@
 <div class="row ng-scope">
 	<div class="col-xs-12">
 		<h3>Global Configuration</h3>
-		<div class="well">
-			<!--<button ng-click="showFilter()">ass</button>-->
-			<div style="height: 25px">
-				 <dropdowntree class="col-xs-5" 
-					  ng-model="selectedItems6" 
-					  data-settings="settings6"></dropdowntree>
-			</div>
-		</div>
-	</div>
-	<div class="col-xs-12 col-sm-6">
+				<div class="well">
+				<div hljs="">
+	<pre><code class="hljs bash">
+// Javascript
+var app = angular.module('DemoApp', ['fanex.ng.dropdowntree']);
+app.config(function(dropdowntreeConfigProvider){
+    dropdowntreeConfigProvider.set({
+        nameMember: "text",
+        childrenMember: "items",
+        templateUrl: "src/fanex.directive.dropdowntree.template.html"
+        sourceData: data
+    });
+});	
 
+// HTML
+&lt;dropdowntree class=&quot;col-xs-5&quot; ng-model=&quot;selectedItems&quot;&gt;&lt;/dropdowntree&gt;
+</code></pre>
+				</div>
+			</div>
 	</div>
 </div>

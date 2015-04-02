@@ -51,8 +51,9 @@ $(document).ready(function(){
 				<li><a data-toggle="tab" href="#section-4">4. Customize Texts / Languages</a></li>
 				<li><a data-toggle="tab" href="#section-5">5. Events</a></li>
 				<li><a data-toggle="tab" href="#section-6">6. Formatting Item</a></li>
-                <li><a data-toggle="tab" href="#section-7"># Global Configuration</a></li>
-				<li><a data-toggle="tab" href="#section-8"># API Document</a></li>
+                <li><a data-toggle="tab" href="#section-7"># Global Config</a></li>
+				<li><a data-toggle="tab" href="#section-8"># Source Data Config</a></li>
+                <li><a data-toggle="tab" href="#section-9"># API Document</a></li>
 			</ul>
 			<div class="tab-content col-md-9" style=" padding:5px">
 				<div id="section-1" class="tab-pane in active">            
@@ -77,6 +78,9 @@ $(document).ready(function(){
 					<div ng-include="'tabcontent/global_config.html'"></div>
 				</div>
                 <div id="section-8" class="tab-pane in active">	
+					<div ng-include="'tabcontent/sourcedata.html'"></div>
+				</div>
+                 <div id="section-9" class="tab-pane in active">	
 					<div ng-include="'tabcontent/api_document.html'"></div>
 				</div>
 			</div>
