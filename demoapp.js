@@ -32,6 +32,7 @@ var data = [
 var app = angular.module('DemoApp', ['fanex.ng.dropdowntree']);
 app.config(function(dropdowntreeConfigProvider){
     dropdowntreeConfigProvider.set({
+        idMember: "value",
         nameMember: "text",
         childrenMember: "items",
         templateUrl: "src/fanex.directive.dropdowntree.template.html?v=" + new Date().getTime(),

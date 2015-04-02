@@ -4,7 +4,6 @@
     content: "\2122";
     color: transparent !important;
 }
-
 dropdowntree
 {
     display: block;
@@ -19,6 +18,11 @@ dropdowntree .filter {
   background-color: #fff;
   border: 1px solid #ccc;
   border-radius: 4px;
+}
+dropdowntree .toolbar{
+    margin-left: 15px;
+    line-height: 20px;
+    margin-top: 5px;
 }
 
 dropdowntree .searchclear

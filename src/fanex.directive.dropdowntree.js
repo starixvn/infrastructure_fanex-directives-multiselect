@@ -8,13 +8,13 @@ angular.module('fanex.ng.dropdowntree', ['ngSanitize'])
     var config = { 
         hasFilter: true,
         hasToolbar: true,
+        idMember: "id",
         nameMember: "name",
         dataMember: null,
         childrenMember: "children",
         itemFormatter: null,
         templateUrl: "fanex.directive.dropdowntree.template.html",
-        sourceData: null,
-        sourceUrl: null
+        sourceData: null
     };
     return {
       set: function (options) {
@@ -133,7 +133,8 @@ angular.module('fanex.ng.dropdowntree', ['ngSanitize'])
                 scope.disabled = angular.isDefined(attrs.disabled) || $parse(attrs.ngDisabled)(scope);
 
                 function createDropDownModelItem(modelItem) {
-                    var item = {
+                    var item = {                        
+                        id: scope._settings.idMember ? modelItem[scope._settings.idMember] : undefined,
                         label: modelItem[scope._settings.nameMember],
                         model: modelItem,
                         checked: modelItem.checked === true,
@@ -141,7 +142,8 @@ angular.module('fanex.ng.dropdowntree', ['ngSanitize'])
                         cssClass: modelItem.cssClass,
                         showChildren: true
                     };
-
+                    
+                    
                     if (modelItem[scope._settings.childrenMember]) {
                         item.children = [];
                         for (var i = 0; i < modelItem[scope._settings.childrenMember].length; i++) {
