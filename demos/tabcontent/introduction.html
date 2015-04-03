@@ -1,0 +1,67 @@
+<h3>Introduction</h3>
+Angular DropdownTree is an AngularJS UI component (directive) which provides a filter box and hierarchical dropdown.
+<hr>
+<h3>Supported browsers</h3>
+
+    Internet Explorer 9+ <br>
+    Firefox<br>
+    Chrome<br>
+<hr>
+<h3>Demo</h3>
+    
+<a href="http://10.18.200.209:8586/dropdowntree/index.html">http://10.18.200.209:8586/dropdowntree/index.html</a>
+
+<h3>Requirements</h3>
+
+- Bootstrap 3 (include Glyphicon)<br>
+- AngularJS, AngularJS Sanitize<br>
+
+<h3>Features</h3>
+- Multi level dropdown item. <br>
+- Easy to change text resources.<br>
+- Global configuration.<br>
+- Custom format item with HTML.<br>
+
+
+<h3>Setup</h3>
+
+Add two following files to the page you want to use this component (please don't forget the requirement files) <br>
+
+<pre>
+&lt;link rel=&quot;stylesheet&quot; href=&quot;directives/fanexdropdowntree/fanex.directive.dropdowntree.css&quot;&gt;
+
+&lt;script type=&quot;text/javascript&quot; src=&quot;directives/fanexdropdowntree/fanex.directive.dropdowntree.min.js&quot;&gt;&lt;/script&gt;
+</pre>
+
+<a href="http://10.18.200.209:8586/dropdowntree/fanex.directive.dropdowntree.zip">Download</a> <br>
+
+<h3>Usage</h3>
+<pre>
+// HTML
+&lt;dropdowntree class=&quot;col-xs-5&quot; 
+	ng-model=&quot;selectedItems1&quot; 
+	settings=&quot;settings1&quot;&quot;&gt;&lt;/dropdowntree&gt;
+	
+// Javascript
+var app = angular.module('DemoApp', ['fanex.ng.dropdowntree']);
+// ...
+ $scope.settings1 = {
+	  nameMember: "text",
+	  childrenMember: "items",
+	  sourceData: data,
+	  templateUrl: templateUrl
+	};
+</pre>
+	
+If you have some dropdowntree with the same settings, you can config them globally:
+<pre>
+// global config
+app.config(function(dropdowntreeConfigProvider){
+    dropdowntreeConfigProvider.set({
+        idMember: "value",
+        nameMember: "text",
+        childrenMember: "items",
+        templateUrl: "dist/fanex.directive.dropdowntree.template.html?v=" + new Date().getTime()        
+    });
+});
+</pre>

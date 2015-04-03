@@ -35,7 +35,7 @@ app.config(function(dropdowntreeConfigProvider){
         idMember: "value",
         nameMember: "text",
         childrenMember: "items",
-        templateUrl: "src/fanex.directive.dropdowntree.template.html?v=" + new Date().getTime(),
+        templateUrl: "dist/fanex.directive.dropdowntree.template.html?v=" + new Date().getTime(),
         sourceData: data
     });
 });
@@ -50,7 +50,6 @@ app.filter("myItemFilter", function(){
 		};
 	});
 app.controller('DemoController', function ($scope) {
-	var templateUrl = "src/fanex.directive.dropdowntree.template.html?v=" + new Date().getTime(); 
     $scope.hasFilter = true;
     $scope.showFilter = function () {
        // $scope.hasFilter = true;

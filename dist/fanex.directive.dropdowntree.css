@@ -50,10 +50,6 @@ dropdowntree span, dropdowntree a
     color: #4f4f4f;
     line-height: 9pt;
 }
-dropdowntree a.demo *
-{
-    color: red;
-}
 dropdowntree .dropdown-menu .glyphicon
 {
     margin-right: 5px;

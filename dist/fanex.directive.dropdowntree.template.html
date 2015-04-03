@@ -1,0 +1,55 @@
+<div class="dropdown">
+    <button type="button" class="btn" ng-click="toggleSelect()" ng-disabled="disabled" ng-class="{'ng-invalid': !valid()}">
+        <span class="pull-left">{{header}}</span> <span class="caret pull-right">
+        </span>
+    </button>
+    <ul class="dropdown-menu">
+        <li ng-show="_settings.hasFilter">
+            <div>
+                  <input type="text" class="filter" ng-model="searchText.value" autofocus="autofocus"
+                    placeholder="{{_textSettings.Filter}}">
+                  <span class="searchclear glyphicon glyphicon-remove-circle" ng-click="clearSearchText();"></span>                
+            </div>
+        </li>
+        <li ng-show="_settings.hasToolbar" class="toolbar">
+            <div class="input-group input-group-sm">
+                <a ng-click="checkAll()"><i class="glyphicon" ng-class="{'glyphicon-check': checkedAll, 'glyphicon-unchecked': !checkedAll}">
+                </i>{{ _textSettings.CheckAll }} </a><span class="input-group-btn" style="cursor: pointer">
+                    <span ng-click="toggleCollapseExpanse();" title="{{_textSettings.CollapseExpanse}}"
+                        class="glyphicon glyphicon-list"></span></span>
+            </div>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <div class="tree">
+                <ul>
+                    <li ng-repeat="item1 in items | filter:filterSearchText">
+                        <span title="{{_textSettings.CollapseBranch}}" ng-click="item1.showChildren = !item1.showChildren">
+                            <i class="nodehanbler glyphicon" ng-class="getCollapseExpandClass(item1)"></i>
+                        </span>
+                        <a ng-class="getItemClass(item1);" ng-click="checkItem(item1);" ng-attr-id="item-{{item1.id}}">
+                            <i class="glyphicon" ng-class="{'glyphicon-check': item1.checked, 'glyphicon-unchecked': !item1.checked}"></i>                              <span ng-bind-html="item1.label | itemFormatFilter:item1:0:_settings.itemFormatter"></span>
+                        </a>
+                        <ul class="list-unstyled" ng-show="item1.showChildren" style="padding-left: 40px">
+                            <li ng-repeat="item2 in item1.children | filter:filterSearchText"><span title="{{_textSettings.CollapseBranch}}"
+                                ng-click="item2.showChildren = !item2.showChildren"><i class="nodehanbler glyphicon"
+                                    ng-class="getCollapseExpandClass(item2)"></i></span><a ng-class="getItemClass(item2);"
+                                        ng-click="checkItem(item2);" ng-attr-id="item-{{item2.id}}" style="text-decoration: none;"><i class="glyphicon"
+                                            ng-class="{'glyphicon-check': item2.checked, 'glyphicon-unchecked': !item2.checked}">
+                                        </i><span ng-bind-html="item2.label | itemFormatFilter:item2:1:_settings.itemFormatter">
+                                        </span></a>
+                                <ul class="list-unstyled" ng-show="item2.showChildren" style="padding-left: 40px">
+                                    <li ng-repeat="item3 in item2.children | filter:filterSearchText"><a ng-class="getItemClass(item3);"
+                                        ng-click="checkItem(item3);" ng-attr-id="item-{{item3.id}}" style="text-decoration: none;"><i class="glyphicon"
+                                            ng-class="{'glyphicon-check': item3.checked, 'glyphicon-unchecked': !item3.checked}">
+                                        </i><span ng-bind-html="item3.label | itemFormatFilter:item3:2:_settings.itemFormatter">
+                                        </span></a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </li>
+    </ul>
+</div>

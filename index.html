@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <title>Example of Bootstrap 3 Accordion</title>
 <link rel="stylesheet" href="dependencies/bootstrap/bootstrap.css">
-<link href="src/fanex.directive.dropdowntree.css" rel="stylesheet" />
+<link href="dist/fanex.directive.dropdowntree.css" rel="stylesheet" />
 <script src="demos/jquery.min.js"></script>
 <script src="demos/bootstrap.min.js"></script>
 <script src="dependencies/angularjs/angular.js"></script>
 <script src="dependencies/angularjs/angular-sanitize.min.js"></script>
-<script src="src/fanex.directive.dropdowntree.js"></script>
+<script src="dist/fanex.directive.dropdowntree.min.js"></script>
 
 <script src="demos/demoapp.js"></script>
 <style type="text/css">
@@ -32,6 +32,10 @@ html, body {
   height: 40px;
   clear:both;
 } 
+dropdowntree a.demo *
+{
+    color: red;
+}
 </style>
 <script>
 $(document).ready(function(){ 
@@ -45,7 +49,8 @@ $(document).ready(function(){
 		<div id="main" class="container clear-top">
 		<h1>AngularJs DropdownTree</h1>
 			  <ul class="nav nav-stacked nav-pills col-md-3" id="myTab">
-				<li class="active"><a data-toggle="tab" href="#section-1">1. Basic Usage</a></li>
+				<li class="active"><a data-toggle="tab" href="#section-0">0. Introduction</a></li>
+                <li><a data-toggle="tab" href="#section-1">1. Basic Usage</a></li>
 				<li><a data-toggle="tab" href="#section-2">2. Loading Data from URL</a></li>
 				<li><a data-toggle="tab" href="#section-3">3. Loading Data from Function</a></li>
 				<li><a data-toggle="tab" href="#section-4">4. Customize Texts / Languages</a></li>
@@ -56,6 +61,9 @@ $(document).ready(function(){
                 <li><a data-toggle="tab" href="#section-9"># API Document</a></li>
 			</ul>
 			<div class="tab-content col-md-9" style=" padding:5px">
+                <div id="section-0" class="tab-pane in active">            
+					<div ng-include="'demos/tabcontent/introduction.html'"></div>
+				</div>
 				<div id="section-1" class="tab-pane in active">            
 					<div ng-include="'demos/tabcontent/section-1.html'"></div>
 				</div>
