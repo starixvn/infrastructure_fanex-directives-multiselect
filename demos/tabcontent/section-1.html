@@ -1,19 +1,25 @@
 		<div class="row ng-scope">
 			<div class="col-xs-12 col-sm-6">
 				<h3>Demo</h3>
+<!--                <button ng-click="showFilter()">Click</button>-->
 				<div class="well">
 					<div style="height: 25px">
-						 <dropdowntree class="col-xs-5"
+						 <dropdowntree required class="col-xs-5"
 							  ng-model="selectedItems1" 
+                                    all-selected-items="allSelectedItems1"
+                                    settings="settings1"
 							  ></dropdowntree>
 					</div>
 				</div>
 			</div>
 							
 			<div class="col-xs-12 col-sm-6">
-				<h3>The model:</h3>
+				<h3>Checked Leaf Items:</h3>
 				<pre class="ng-binding">{{selectedItems1}}</pre>
+                <h3>All Checked Items:</h3>
+				<pre class="ng-binding">{{allSelectedItems1}}</pre>
 			</div>
+            
 		</div>
 <div class="row ng-scope">
 	<div class="col-md-12">
@@ -24,7 +30,7 @@
 	<pre><code class="hljs bash">// HTML
 &lt;dropdowntree class=&quot;col-xs-5&quot; 
 	ng-model=&quot;selectedItems1&quot; 
-	settings=&quot;settings1&quot;&quot;&gt;&lt;/dropdowntree&gt;
+	settings=&quot;settings1&quot; all-selected-items=&quot;allSelectedItems1&quot;&gt;&lt;/dropdowntree&gt;
 
 // JavaScript
 var data = [
@@ -58,10 +64,12 @@ var data = [
 	];
     
  $scope.settings1 = {
-	  nameMember: "text",
-	  childrenMember: "items",
-	  sourceData: data,
-	  templateUrl: templateUrl
+        collapsedAll: false,
+        checkedAll: false,
+        nameMember: "text",
+        childrenMember: "items",
+        sourceData: data,
+        templateUrl: templateUrl
 	};
 			</code></pre>
 					</div>

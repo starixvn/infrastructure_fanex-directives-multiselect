@@ -1,7 +1,7 @@
 /*global angular */
 (function() {
     "use strict";
-    angular.module('fanex.ng.dropdowntree', ['ngSanitize'])
+    angular.module('fanex.dropdowntree', ['ngSanitize'])
         .filter("itemFormatFilter", function() {
             return function(value, item, level, formatCallback) {
                 return formatCallback ? formatCallback(value, item.model, level) : value;
@@ -9,6 +9,8 @@
         })
         .provider('dropdowntreeConfig', function() {
             var config = {
+                collapsedAll: false, // temp setting, not 2 way binding
+                checkedAll: false, // temp setting
                 hasFilter: true,
                 hasToolbar: true,
                 idMember: "id",
@@ -90,29 +92,15 @@
                     }
 
                     return false;
-                }
-
-                function getCheckedItems(items) {
-                    var value = [];
-                    angular.forEach(items, function(item) {
-                        if (item.children && item.children.length > 0) {
-                            var children = getCheckedItems(item.children);
-                            value = value.concat(children);
-                        } else {
-                            if (item.checked) {
-                                value.push(item.model);
-                            }
-                        }
-                    });
-
-                    return value;
-                }
-
+                }               
+                
+                // RETURN 
                 return {
                     restrict: 'E',
                     require: 'ngModel',
                     scope: {
                         selectedItems: "=ngModel",
+                        allSelectedItems: "=?",
                         settings: "=?",
                         textSettings: "=?",
                         ngOnCheckall: "&",
@@ -130,7 +118,7 @@
                         scope.searchText = {
                             value: ""
                         };
-                        scope.collapseAll = false;
+                        scope.collapsedAll = false;
                         scope.checkedAll = false;
                         scope.items = []; // dropdown model items
                         scope.header = "";
@@ -158,7 +146,35 @@
 
                             return item;
                         }
+                        
+                        function getCheckedItems(items) {
+                            var checkedItems = [];
+                            var leafCheckedItems = [];
+                            angular.forEach(items, function(item) {
 
+                                if (item.checked) {
+                                    var cloneItem = angular.copy(item.model, {}); 
+                                    delete cloneItem[scope._settings.childrenMember];
+                                    checkedItems.push(cloneItem);
+                                }
+
+                                if (item.children && item.children.length > 0) {
+                                    var children = getCheckedItems(item.children);
+                                    leafCheckedItems = leafCheckedItems.concat(children.leafItems);
+                                    checkedItems = checkedItems.concat(children.allItems);
+                                } else {
+                                    if (item.checked) {
+                                        leafCheckedItems.push(item.model);
+                                    }
+                                }
+                            });
+
+                            return {
+                                leafItems: leafCheckedItems,
+                                allItems: checkedItems
+                            };
+                        }
+                        
                         function parseSourceData(sourceData) {
                             var items = [];
                             if (!sourceData) {
@@ -202,8 +218,10 @@
                         }
 
                         function refreshViewValue() {
-                            var value = getCheckedItems(scope.items);
-                            modelCtrl.$setViewValue(value);
+                            var data = getCheckedItems(scope.items);
+                            // modelCtrl.$setViewValue(data.leafItems);                            
+                            scope.selectedItems = data.leafItems;
+                            scope.allSelectedItems = data.allItems;                                 
                         }
 
                         function parseData() {
@@ -212,7 +230,9 @@
                             }
 
                             scope.items = parseSourceData(scope._settings.sourceData);
-                            scope.selectedItems = getCheckedItems(scope.items);
+                            var data = getCheckedItems(scope.items);
+                            scope.selectedItems = data.leafItems;
+                            scope.allSelectedItems = data.allItems;   
                         }
 
                         // required validate
@@ -246,6 +266,11 @@
                             } else {
                                 parseData();
                             }
+                            
+                            scope.toggleCheckAll(scope._settings.checkedAll);
+                            
+                            scope.toggleCollapseExpanse(scope._settings.collapsedAll);
+                            
                         }, true);
 
                         scope.$watch("textSettings", function() {
@@ -266,7 +291,6 @@
                         scope.$watch("selectedItems", function(newVal) {
                             if (angular.isDefined(newVal)) {
                                 //  scope.$eval(changeHandler);
-
                                 scope.header = getHeaderText(scope.selectedItems);
                                 modelCtrl.$setValidity('required', scope.valid());
                             }
@@ -284,8 +308,13 @@
                                 (!angular.isArray(value) && value !== null);
                         };
 
-                        scope.checkAll = function() {
-                            scope.checkedAll = !scope.checkedAll;
+                        scope.toggleCheckAll = function(value) {
+                            if(typeof value === "boolean" && scope.checkedAll === value)
+                            {
+                                return;                                
+                            }
+                            
+                            scope.checkedAll = !scope.checkedAll;                            
                             angular.forEach(scope.items, function(item) {
                                 setItemChecked(item, scope.checkedAll);
                             });
@@ -310,10 +339,15 @@
                             return item.disabled ? 'disabled' : item.cssClass;
                         };
 
-                        scope.toggleCollapseExpanse = function() {
-                            scope.collapseAll = !scope.collapseAll;
+                        scope.toggleCollapseExpanse = function(value) {
+                            if(typeof value === "boolean" && scope.collapsedAll === value)
+                            {
+                                return;
+                            }
+                                                        
+                            scope.collapsedAll = !scope.collapsedAll;                                                                                                             
                             angular.forEach(scope.items, function(item) {
-                                item.showChildren = !scope.collapseAll;
+                                item.showChildren = !scope.collapsedAll;
                             });
 
                             refreshViewValue();

@@ -29,7 +29,7 @@ var data = [
 	];
 	
 
-var app = angular.module('DemoApp', ['fanex.ng.dropdowntree']);
+var app = angular.module('DemoApp', ['fanex.dropdowntree']);
 app.config(function(dropdowntreeConfigProvider){
     dropdowntreeConfigProvider.set({
         idMember: "value",
@@ -51,24 +51,27 @@ app.filter("myItemFilter", function(){
 	});
 app.controller('DemoController', function ($scope) {
     $scope.hasFilter = true;
+  //  $scope.selectedItems1 = [];
     $scope.showFilter = function () {
        // $scope.hasFilter = true;
        // $scope.data[0].disabled = true;
        // $scope.textSettings.NoItemChecked = "aaaaaaaaaaa";
-       // $scope.settings1.hasFilter = false;
+        // $scope.settings1.hasFilter = false;
 	   // $scope.settings2.hasFilter = false;
-	   $scope.settings1.sourceData[0].text = "aaaaaaaaaaaaaaaa";
+	    //$scope.settings1.sourceData[0].text = "aaaaaaaaaaaaaaaa";
+        //alert(1);
+        // console.log($scope.selectedItems1);
     };
 	
 	$scope.selectedItemChange = function(){
 		alert(1);
 	};
 
-    
-	$scope.selectedItems = [];
-	
+
 	$scope.settings1 = {
-	  sourceData: data
+	  sourceData: data,
+        checkedAll: true,
+        collapsedAll: false
         //,templateUrl: templateUrl
 	};
 	
@@ -106,7 +109,10 @@ app.controller('DemoController', function ($scope) {
 		return value;
 	  }
 	};
-
+    $scope.allSelectedItems1 = [];
+    $scope.$watch("allSelectedItems1", function(newVal){
+        //console.log(newVal);
+    });
 	$scope.textSettings = {
 	    Filter: "Please enter text",
 		CheckAll: "Check all items",
