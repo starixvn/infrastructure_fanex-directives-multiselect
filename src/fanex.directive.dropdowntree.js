@@ -377,7 +377,6 @@
                 link: function(scope, element) {
                     var onOpenHandler = scope.ngOnOpen || angular.noop;
                     var onCloseHandler = scope.ngOnClose || angular.noop;
-
                     var dropdownElement;
 
                     function isElementInArray(element, elementArray) {
@@ -394,7 +393,7 @@
                             dropdownElement = angular.element(element[0].querySelector('.dropdown'));
                         }
                     }
-
+                    
                     scope.toggleSelect = function() {
                         assignDropdownElement();
                         if (dropdownElement.hasClass('open')) {
