@@ -106,11 +106,12 @@
                         textSettings: "=?",
                         ngOnCheckall: "&",
                         ngOnOpen: "&",
-                        ngOnClose: "&"
+                        ngOnClose: "&",
+                        ngChange: "&"
                     },
                     link: function(scope, element, attrs, modelCtrl) {
                         var required = attrs.required || attrs.ngRequired;
-                        //  var changeHandler = scope.ngChange || angular.noop;// $parse(attrs.change)(scope) || angular.noop;
+                        var changeHandler = scope.ngChange || angular.noop;// $parse(attrs.change)(scope) || angular.noop;
                         var onCheckAllHandler = scope.ngOnCheckall || angular.noop;
 
                         scope._settings = null;
@@ -292,6 +293,7 @@
                         scope.$watch("selectedItems", function(newVal) {
                             if (angular.isDefined(newVal)) {
                                 //  scope.$eval(changeHandler);
+                                changeHandler();
                                 scope.header = getHeaderText(scope.selectedItems);
                                 modelCtrl.$setValidity('required', scope.valid());
                             }
