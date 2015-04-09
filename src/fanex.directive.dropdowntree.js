@@ -67,7 +67,8 @@
                         var parent = item.parent;
                         var allChecked = true;
                         for (var i = 0; i < parent.children.length; i++) {
-                            if (!parent.children[i].checked) {
+                            var child = parent.children[i];
+                            if (!child.disabled && !child.checked) {
                                 allChecked = false;
                                 break;
                             }
