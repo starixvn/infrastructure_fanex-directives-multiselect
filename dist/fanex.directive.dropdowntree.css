@@ -7,7 +7,7 @@
 dropdowntree
 {
     display: block;
-    min-width: 200px;
+    min-width: 150px;
 }
 dropdowntree .filter {
   display: block;
@@ -54,10 +54,11 @@ dropdowntree .dropdown-menu .glyphicon
 {
     margin-right: 5px;
 }
-dropdowntree .btn
+dropdowntree .btn, dropdowntree .btn:hover, dropdowntree .btn:focus
 {
-    width: 100%;
-    background-color: #FFF;
+    background: #FFF;
+    border: 1px solid #b1b1b1;
+    width: 100%;    
 }
 dropdowntree .dropdown
 {
@@ -66,7 +67,7 @@ dropdowntree .dropdown
 }
 dropdowntree .dropdown-menu
 {
-    min-width: 250px;
+    min-width: 150px;
     max-height: 600px;
     width: 100%;
     box-sizing: border-box;

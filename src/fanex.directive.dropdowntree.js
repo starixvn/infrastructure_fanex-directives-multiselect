@@ -15,11 +15,13 @@
                 hasToolbar: true,
                 idMember: "id",
                 nameMember: "name",
+                selectedMember: null,
                 dataMember: null,
                 childrenMember: "children",
                 itemFormatter: null,
                 templateUrl: "fanex.directive.dropdowntree.template.html",
-                sourceData: null
+                sourceData: null,
+                width: 250
             };
             return {
                 set: function(options) {
@@ -157,7 +159,9 @@
                                 if (item.checked) {
                                     var cloneItem = angular.copy(item.model, {}); 
                                     delete cloneItem[scope._settings.childrenMember];
-                                    checkedItems.push(cloneItem);
+                                    checkedItems.push(scope._settings.selectedMember ?
+                                                      cloneItem[scope._settings.selectedMember] :
+                                                      cloneItem);
                                 }
 
                                 if (item.children && item.children.length > 0) {
@@ -166,7 +170,9 @@
                                     checkedItems = checkedItems.concat(children.allItems);
                                 } else {
                                     if (item.checked) {
-                                        leafCheckedItems.push(item.model);
+                                        leafCheckedItems.push(scope._settings.selectedMember ?
+                                                              item.model[scope._settings.selectedMember] :
+                                                              item.model);
                                     }
                                 }
                             });
@@ -201,7 +207,9 @@
                                 var names = [];
                                 var textLength = 0;
                                 for (var i = 0; i < selectedItems.length; i++) {
-                                    var name = selectedItems[i][scope._settings.nameMember];
+                                    var name = scope._settings.selectedMember ?
+                                                selectedItems[i] :
+                                                selectedItems[i][scope._settings.nameMember];
 
                                     names.push(name);
                                     textLength += name.length + 2; // 2 character of ", "
@@ -312,12 +320,12 @@
                         };
 
                         scope.toggleCheckAll = function(value) {
-                            if(typeof value === "boolean" && scope.checkedAll === value)
-                            {
-                                return;                                
+                            if (typeof value === "boolean") {
+                                scope.checkedAll = value;
+                            } else {
+                                scope.checkedAll = !scope.checkedAll;
                             }
-                            
-                            scope.checkedAll = !scope.checkedAll;                            
+                                                      
                             angular.forEach(scope.items, function(item) {
                                 setItemChecked(item, scope.checkedAll);
                             });
@@ -343,12 +351,12 @@
                         };
 
                         scope.toggleCollapseExpanse = function(value) {
-                            if(typeof value === "boolean" && scope.collapsedAll === value)
-                            {
-                                return;
+                            if (typeof value === "boolean") {
+                                scope.collapsedAll = value;
+                            } else {
+                                scope.collapsedAll = !scope.collapsedAll;
                             }
-                                                        
-                            scope.collapsedAll = !scope.collapsedAll;                                                                                                             
+                                  
                             angular.forEach(scope.items, function(item) {
                                 item.showChildren = !scope.collapsedAll;
                             });

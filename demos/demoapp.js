@@ -72,6 +72,7 @@ app.controller('DemoController', function ($scope) {
 	  sourceData: data,
         checkedAll: true,
         collapsedAll: false
+        // ,selectedMember: "text"
         //,templateUrl: templateUrl
 	};
 	
