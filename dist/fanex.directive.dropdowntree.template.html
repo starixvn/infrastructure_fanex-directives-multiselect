@@ -16,7 +16,7 @@
                 <a ng-click="toggleCheckAll()"><i class="glyphicon" ng-class="{'glyphicon-check': checkedAll, 'glyphicon-unchecked': !checkedAll}">
                 </i>{{ _textSettings.CheckAll }} </a><span class="input-group-btn" style="cursor: pointer">
                     <span ng-click="toggleCollapseExpanse();" title="{{_textSettings.CollapseExpanse}}"
-                        class="glyphicon glyphicon-list"></span></span>
+                        class="glyphicon" ng-class="{'glyphicon-save': collapsedAll, 'glyphicon-open': !collapsedAll}"></span></span>
             </div>
         </li>
         <li class="divider"></li>

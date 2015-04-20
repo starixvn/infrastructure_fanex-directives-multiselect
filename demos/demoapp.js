@@ -70,8 +70,11 @@ app.controller('DemoController', function ($scope) {
 
 	$scope.settings1 = {
 	  sourceData: data,
-        checkedAll: true,
-        collapsedAll: false
+        checkedAll: false,
+        collapsedAll: false,
+        checkedFilter: function(item){            
+            return item.value == 2;
+        }
         // ,selectedMember: "text"
         //,templateUrl: templateUrl
 	};

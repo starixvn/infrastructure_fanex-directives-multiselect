@@ -64,8 +64,11 @@ var data = [
 	];
     
  $scope.settings1 = {
+        checkedAll: false,
         collapsedAll: false,
-        checkedAll: true,
+        checkedFilter: function(item){            
+            return item.value == 2;
+        }
         nameMember: "text",
         childrenMember: "items",
         sourceData: data,

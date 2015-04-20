@@ -21,6 +21,7 @@
                 itemFormatter: null,
                 templateUrl: "fanex.directive.dropdowntree.template.html",
                 sourceData: null,
+                checkedFilter: null, // function to checked item
                 width: 250
             };
             return {
@@ -53,7 +54,7 @@
                     if (item.disabled) {
                         return;
                     }
-
+                    
                     item.checked = value;
                     if (item.children) {
                         for (var i = 0; i < item.children.length; i++) {
@@ -115,7 +116,9 @@
                         var required = attrs.required || attrs.ngRequired;
                         var changeHandler = scope.ngChange || angular.noop;// $parse(attrs.change)(scope) || angular.noop;
                         var onCheckAllHandler = scope.ngOnCheckall || angular.noop;
-
+                        
+                        var _leafCheckedNames = [];
+                        
                         scope._settings = null;
                         scope._textSettings = null;
 
@@ -129,11 +132,13 @@
                         scope.disabled = angular.isDefined(attrs.disabled) || $parse(attrs.ngDisabled)(scope);
 
                         function createDropDownModelItem(modelItem) {
+                            
                             var item = {
                                 id: scope._settings.idMember ? modelItem[scope._settings.idMember] : undefined,
                                 label: modelItem[scope._settings.nameMember],
                                 model: modelItem,
-                                checked: modelItem.checked === true,
+                                checked: modelItem.checked === true || 
+                                    (scope._settings.checkedFilter && scope._settings.checkedFilter(modelItem)),
                                 disabled: modelItem.disabled === true,
                                 cssClass: modelItem.cssClass,
                                 showChildren: true
@@ -154,6 +159,7 @@
                         function getCheckedItems(items) {
                             var checkedItems = [];
                             var leafCheckedItems = [];
+                            var leafCheckedNames = [];
                             angular.forEach(items, function(item) {
 
                                 if (item.checked) {
@@ -168,16 +174,19 @@
                                     var children = getCheckedItems(item.children);
                                     leafCheckedItems = leafCheckedItems.concat(children.leafItems);
                                     checkedItems = checkedItems.concat(children.allItems);
+                                    leafCheckedNames = leafCheckedNames.concat(children.leafNames);
                                 } else {
                                     if (item.checked) {
                                         leafCheckedItems.push(scope._settings.selectedMember ?
                                                               item.model[scope._settings.selectedMember] :
                                                               item.model);
+                                        leafCheckedNames.push(item.model[scope._settings.nameMember]);
                                     }
                                 }
                             });
 
                             return {
+                                leafNames: leafCheckedNames,
                                 leafItems: leafCheckedItems,
                                 allItems: checkedItems
                             };
@@ -197,19 +206,17 @@
                         }
 
                         function getHeaderText(selectedItems) {
-                            if (angular.isArray(selectedItems) === false || selectedItems.length === 0) {
+                            if (angular.isArray(_leafCheckedNames) === false || _leafCheckedNames.length === 0) {
                                 return scope._textSettings.NoItemChecked;
                             }
 
                             var header;
 
-                            if (selectedItems.length < 10) {
+                            if (_leafCheckedNames.length < 10) {
                                 var names = [];
                                 var textLength = 0;
-                                for (var i = 0; i < selectedItems.length; i++) {
-                                    var name = scope._settings.selectedMember ?
-                                                selectedItems[i] :
-                                                selectedItems[i][scope._settings.nameMember];
+                                for (var i = 0; i < _leafCheckedNames.length; i++) {
+                                    var name = _leafCheckedNames[i];
 
                                     names.push(name);
                                     textLength += name.length + 2; // 2 character of ", "
@@ -221,7 +228,7 @@
 
                                 header = names.join(", ");
                             } else {
-                                header = scope._textSettings.ItemsSelected.replace("#", selectedItems.length);
+                                header = scope._textSettings.ItemsSelected.replace("#", _leafCheckedNames.length);
                             }
 
                             return header;
@@ -229,7 +236,8 @@
 
                         function refreshViewValue() {
                             var data = getCheckedItems(scope.items);
-                            // modelCtrl.$setViewValue(data.leafItems);                            
+                            // modelCtrl.$setViewValue(data.leafItems);  
+                            _leafCheckedNames = data.leafNames;
                             scope.selectedItems = data.leafItems;
                             scope.allSelectedItems = data.allItems;                                 
                         }
@@ -241,6 +249,7 @@
 
                             scope.items = parseSourceData(scope._settings.sourceData);
                             var data = getCheckedItems(scope.items);
+                            _leafCheckedNames = data.leafNames;
                             scope.selectedItems = data.leafItems;
                             scope.allSelectedItems = data.allItems;   
                         }
@@ -277,7 +286,9 @@
                                 parseData();
                             }
                             
-                            scope.toggleCheckAll(scope._settings.checkedAll);
+                            if(scope._settings.checkedAll === true){
+                                scope.toggleCheckAll(true);
+                            }
                             
                             scope.toggleCollapseExpanse(scope._settings.collapsedAll);
                             
@@ -333,7 +344,7 @@
                             onCheckAllHandler();
                         };
 
-                        scope.checkItem = function(item) {
+                        scope.checkItem = function(item) {                            
                             setItemChecked(item, !item.checked);
                             refreshViewValue();
                             scope.checkedAll = isAllItemsChecked(scope.items);
