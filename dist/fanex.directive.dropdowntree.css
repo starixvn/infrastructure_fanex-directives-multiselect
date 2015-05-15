@@ -24,7 +24,9 @@ dropdowntree .toolbar{
     line-height: 20px;
     margin-top: 5px;
 }
-
+dropdowntree .toolbar .input-group{
+    width: 100%;
+}
 dropdowntree .searchclear
 {
     position: absolute;

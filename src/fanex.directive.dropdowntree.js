@@ -1,13 +1,13 @@
 /*global angular */
-(function() {
+(function () {
     "use strict";
     angular.module('fanex.dropdowntree', ['ngSanitize'])
-        .filter("itemFormatFilter", function() {
-            return function(value, item, level, formatCallback) {
+        .filter("itemFormatFilter", function () {
+            return function (value, item, level, formatCallback) {
                 return formatCallback ? formatCallback(value, item.model, level) : value;
             };
         })
-        .provider('dropdowntreeConfig', function() {
+        .provider('dropdowntreeConfig', function () {
             var config = {
                 collapsedAll: false, // temp setting, not 2 way binding
                 checkedAll: false, // temp setting
@@ -22,19 +22,21 @@
                 templateUrl: "fanex.directive.dropdowntree.template.html",
                 sourceData: null,
                 checkedFilter: null, // function to checked item
-                width: 250
+                width: 250,
+                height: null, // auto
+                maxTextLength: 100
             };
             return {
-                set: function(options) {
+                set: function (options) {
                     angular.extend(config, options);
                 },
-                $get: function() {
+                $get: function () {
                     return angular.extend({}, config);
                 }
             };
         })
         .directive('dropdowntree', ['$parse', '$compile', '$http', '$filter', 'dropdowntreeConfig',
-            function($parse, $compile, $http, $filter, dropdowntreeConfig) {
+            function ($parse, $compile, $http, $filter, dropdowntreeConfig) {
                 function containsText(item, searchText) {
                     var found = item.label.toLowerCase().indexOf(searchText.toLowerCase()) > -1;
 
@@ -54,7 +56,7 @@
                     if (item.disabled) {
                         return;
                     }
-                    
+
                     item.checked = value;
                     if (item.children) {
                         for (var i = 0; i < item.children.length; i++) {
@@ -96,8 +98,8 @@
                     }
 
                     return false;
-                }               
-                
+                }
+
                 // RETURN 
                 return {
                     restrict: 'E',
@@ -112,13 +114,13 @@
                         ngOnClose: "&",
                         ngChange: "&"
                     },
-                    link: function(scope, element, attrs, modelCtrl) {
+                    link: function (scope, element, attrs, modelCtrl) {
                         var required = attrs.required || attrs.ngRequired;
-                        var changeHandler = scope.ngChange || angular.noop;// $parse(attrs.change)(scope) || angular.noop;
+                        var changeHandler = scope.ngChange || angular.noop; // $parse(attrs.change)(scope) || angular.noop;
                         var onCheckAllHandler = scope.ngOnCheckall || angular.noop;
-                        
+
                         var _leafCheckedNames = [];
-                        
+
                         scope._settings = null;
                         scope._textSettings = null;
 
@@ -132,12 +134,12 @@
                         scope.disabled = angular.isDefined(attrs.disabled) || $parse(attrs.ngDisabled)(scope);
 
                         function createDropDownModelItem(modelItem) {
-                            
+
                             var item = {
                                 id: scope._settings.idMember ? modelItem[scope._settings.idMember] : undefined,
-                                label: modelItem[scope._settings.nameMember],
+                                label: modelItem[scope._settings.nameMember].substr(0, scope._settings.maxTextLength),
                                 model: modelItem,
-                                checked: modelItem.checked === true || 
+                                checked: modelItem.checked === true ||
                                     (scope._settings.checkedFilter && scope._settings.checkedFilter(modelItem)),
                                 disabled: modelItem.disabled === true,
                                 cssClass: modelItem.cssClass,
@@ -155,15 +157,15 @@
 
                             return item;
                         }
-                        
+
                         function getCheckedItems(items) {
                             var checkedItems = [];
                             var leafCheckedItems = [];
                             var leafCheckedNames = [];
-                            angular.forEach(items, function(item) {
+                            angular.forEach(items, function (item) {
 
                                 if (item.checked) {
-                                    var cloneItem = angular.copy(item.model, {}); 
+                                    var cloneItem = angular.copy(item.model, {});
                                     delete cloneItem[scope._settings.childrenMember];
                                     checkedItems.push(scope._settings.selectedMember ?
                                                       cloneItem[scope._settings.selectedMember] :
@@ -191,7 +193,7 @@
                                 allItems: checkedItems
                             };
                         }
-                        
+
                         function parseSourceData(sourceData) {
                             var items = [];
                             if (!sourceData) {
@@ -234,12 +236,12 @@
                             return header;
                         }
 
-                        function refreshViewValue() {
-                            var data = getCheckedItems(scope.items);
-                            // modelCtrl.$setViewValue(data.leafItems);  
+                        function refreshViewValue(isCallSetViewValue) {
+                            var data = getCheckedItems(scope.items);                            
                             _leafCheckedNames = data.leafNames;
                             scope.selectedItems = data.leafItems;
-                            scope.allSelectedItems = data.allItems;                                 
+                            scope.allSelectedItems = data.allItems;
+                            
                         }
 
                         function parseData() {
@@ -251,19 +253,24 @@
                             var data = getCheckedItems(scope.items);
                             _leafCheckedNames = data.leafNames;
                             scope.selectedItems = data.leafItems;
-                            scope.allSelectedItems = data.allItems;   
+                            scope.allSelectedItems = data.allItems;
+                            scope.checkedAll = isAllItemsChecked(scope.items);
                         }
 
                         // required validate
-                        attrs.$observe('required', function(newVal) {
+                        attrs.$observe('required', function (newVal) {
                             required = newVal;
                         });
 
-                        scope.$watch("settings", function() {
+                        scope.$watch("settings", function (newValue) {
+                            if (!newValue) {
+                                return;
+                            }
+
                             scope._settings = angular.extend({}, dropdowntreeConfig, scope.settings);
                             if (typeof scope._settings.itemFormatter === "string") {
                                 var filterInstance = $filter(scope._settings.itemFormatter);
-                                scope._settings.itemFormatter = function(value, item, level) {
+                                scope._settings.itemFormatter = function (value, item, level) {
                                     return filterInstance(value, item, level);
                                 };
                             }
@@ -273,7 +280,7 @@
                             if (sourceDataType === "string") // url
                             {
                                 $http.get(scope._settings.sourceData)
-                                    .success(function(response) {
+                                    .success(function (response) {
                                         scope._settings.sourceData = response;
 
                                         parseData();
@@ -285,16 +292,16 @@
                             } else {
                                 parseData();
                             }
-                            
-                            if(scope._settings.checkedAll === true){
+
+                            if (scope._settings.checkedAll === true) {
                                 scope.toggleCheckAll(true);
                             }
-                            
+
                             scope.toggleCollapseExpanse(scope._settings.collapsedAll);
-                            
+
                         }, true);
 
-                        scope.$watch("textSettings", function() {
+                        scope.$watch("textSettings", function () {
                             var defaultTextSettings = {
                                 Filter: "Filter",
                                 CheckAll: "Check all",
@@ -309,7 +316,7 @@
                         }, true);
 
                         //watch model change
-                        scope.$watch("selectedItems", function(newVal) {
+                        scope.$watch("selectedItems", function (newVal) {
                             if (angular.isDefined(newVal)) {
                                 //  scope.$eval(changeHandler);
                                 changeHandler();
@@ -330,56 +337,58 @@
                                 (!angular.isArray(value) && value !== null);
                         };
 
-                        scope.toggleCheckAll = function(value) {
+                        scope.toggleCheckAll = function (value) {
                             if (typeof value === "boolean") {
                                 scope.checkedAll = value;
                             } else {
                                 scope.checkedAll = !scope.checkedAll;
                             }
-                                                      
-                            angular.forEach(scope.items, function(item) {
+
+                            angular.forEach(scope.items, function (item) {
                                 setItemChecked(item, scope.checkedAll);
                             });
                             refreshViewValue();
                             onCheckAllHandler();
                         };
 
-                        scope.checkItem = function(item) {                            
+                        scope.checkItem = function (item) {                            
                             setItemChecked(item, !item.checked);
                             refreshViewValue();
                             scope.checkedAll = isAllItemsChecked(scope.items);
+
+                            modelCtrl.$setViewValue(scope.selectedItems);                              
                         };
 
-                        scope.getCollapseExpandClass = function(item) {
+                        scope.getCollapseExpandClass = function (item) {
                             if (!item.children || item.children.length === 0) {
                                 return 'glyphicon-none';
                             }
                             return item.showChildren ? 'glyphicon-triangle-bottom' : 'glyphicon-triangle-right';
                         };
 
-                        scope.getItemClass = function(item) {
+                        scope.getItemClass = function (item) {
                             return item.disabled ? 'disabled' : item.cssClass;
                         };
 
-                        scope.toggleCollapseExpanse = function(value) {
+                        scope.toggleCollapseExpanse = function (value) {
                             if (typeof value === "boolean") {
                                 scope.collapsedAll = value;
                             } else {
                                 scope.collapsedAll = !scope.collapsedAll;
                             }
-                                  
-                            angular.forEach(scope.items, function(item) {
+
+                            angular.forEach(scope.items, function (item) {
                                 item.showChildren = !scope.collapsedAll;
                             });
 
                             refreshViewValue();
                         };
 
-                        scope.filterSearchText = function(item) {
+                        scope.filterSearchText = function (item) {
                             return scope.searchText.value ? containsText(item, scope.searchText.value) : true;
                         };
 
-                        scope.clearSearchText = function() {
+                        scope.clearSearchText = function () {
                             scope.searchText.value = "";
                             scope.focusSearchBox();
                         };
@@ -389,14 +398,14 @@
         ])
 
     .directive('dropdowntreePopup', ['$document',
-        function($document) {
+        function ($document) {
             return {
                 restrict: 'E',
                 replace: true,
                 scope: false,
                 // templateUrl: 'fanex.dropdowntree.template.html',
                 template: '<div><div ng-include="_settings.templateUrl"></div><div>',
-                link: function(scope, element) {
+                link: function (scope, element) {
                     var onOpenHandler = scope.ngOnOpen || angular.noop;
                     var onCloseHandler = scope.ngOnClose || angular.noop;
                     var dropdownElement;
@@ -415,8 +424,8 @@
                             dropdownElement = angular.element(element[0].querySelector('.dropdown'));
                         }
                     }
-                    
-                    scope.toggleSelect = function() {
+
+                    scope.toggleSelect = function () {
                         assignDropdownElement();
                         if (dropdownElement.hasClass('open')) {
                             dropdownElement.removeClass('open');
@@ -448,4 +457,4 @@
             };
         }
     ]);
-}());
+} ());
