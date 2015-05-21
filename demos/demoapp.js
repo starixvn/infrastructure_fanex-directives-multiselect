@@ -35,7 +35,7 @@ app.config(function(dropdowntreeConfigProvider){
         idMember: "value",
         nameMember: "text",
         childrenMember: "items",
-        templateUrl: "dist/fanex.directive.dropdowntree.template.html?v=" + new Date().getTime(),
+        templateUrl: "src/fanex.directive.dropdowntree.template.html?v=" + new Date().getTime(),
         sourceData: data
     });
 });

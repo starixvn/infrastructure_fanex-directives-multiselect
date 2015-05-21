@@ -1,7 +1,7 @@
 /*global angular */
 (function () {
     "use strict";
-    angular.module('fanex.dropdowntree', ['ngSanitize'])
+    angular.module('fanex.dropdowntree', [])
         .filter("itemFormatFilter", function () {
             return function (value, item, level, formatCallback) {
                 return formatCallback ? formatCallback(value, item.model, level) : value;
