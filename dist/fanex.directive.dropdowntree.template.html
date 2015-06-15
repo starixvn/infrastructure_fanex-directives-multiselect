@@ -4,14 +4,14 @@
         </span>
     </button>
      <ul class="dropdown-menu" style="width:{{_settings.width}}px">
-        <li ng-show="_settings.hasFilter">
+        <li ng-if="_settings.hasFilter">
             <div>
                   <input type="text" class="filter" ng-model="searchText.value" autofocus="autofocus"
                     placeholder="{{_textSettings.Filter}}">
                   <span class="searchclear glyphicon glyphicon-remove-circle" ng-click="clearSearchText();"></span>                
             </div>
         </li>
-        <li ng-show="_settings.hasToolbar" class="toolbar">
+        <li ng-if="_settings.hasToolbar" class="toolbar">
             <div class="input-group input-group-sm">
                 <a ng-click="toggleCheckAll()"><i class="glyphicon" ng-class="{'glyphicon-check': checkedAll, 'glyphicon-unchecked': !checkedAll}">
                 </i>{{ _textSettings.CheckAll }} </a><span class="input-group-btn" style="cursor: pointer">
@@ -30,7 +30,7 @@
                         <a ng-class="getItemClass(item1);" ng-click="checkItem(item1);" ng-attr-id="item-{{item1.id}}">
                             <i class="glyphicon" ng-class="{'glyphicon-check': item1.checked, 'glyphicon-unchecked': !item1.checked}"></i>                                               <span>{{item1.label | itemFormatFilter:item1:0:_settings.itemFormatter}}</span>
                         </a>
-                        <ul class="list-unstyled" ng-show="item1.showChildren" style="padding-left: 40px">
+                        <ul class="list-unstyled" ng-if="item1.showChildren" style="padding-left: 40px">
                             <li ng-repeat="item2 in item1.children | filter:filterSearchText"><span title="{{_textSettings.CollapseBranch}}"
                                 ng-click="item2.showChildren = !item2.showChildren"><i class="nodehanbler glyphicon"
                                     ng-class="getCollapseExpandClass(item2)"></i></span><a ng-class="getItemClass(item2);"

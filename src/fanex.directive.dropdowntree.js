@@ -100,6 +100,32 @@
                     return false;
                 }
 
+                function createDropDownModelItem(settings, modelItem) {
+                    var item = {
+                        id: settings.idMember ? modelItem[settings.idMember] : undefined,
+                        label: modelItem[settings.nameMember].substr(0, settings.maxTextLength),
+                        model: modelItem,
+                        checked: modelItem.checked === true ||
+                            (settings.checkedFilter && settings.checkedFilter(modelItem)),
+                        disabled: modelItem.disabled === true,
+                        cssClass: modelItem.cssClass,
+                        showChildren: true
+                    };
+
+                    if (modelItem[settings.childrenMember]) {
+                        item.children = [];
+                        var children = modelItem[settings.childrenMember];
+                        var length = children.length;                                
+                        for (var i = 0; i < length; i++) {
+                            var child = createDropDownModelItem(settings, children[i]);
+                            child.parent = item;
+                            item.children.push(child);
+                        }
+                    }
+
+                    return item;
+                }
+                
                 // RETURN 
                 return {
                     restrict: 'E',
@@ -133,37 +159,14 @@
                         scope.header = "";
                         scope.disabled = angular.isDefined(attrs.disabled) || $parse(attrs.ngDisabled)(scope);
 
-                        function createDropDownModelItem(modelItem) {
-
-                            var item = {
-                                id: scope._settings.idMember ? modelItem[scope._settings.idMember] : undefined,
-                                label: modelItem[scope._settings.nameMember].substr(0, scope._settings.maxTextLength),
-                                model: modelItem,
-                                checked: modelItem.checked === true ||
-                                    (scope._settings.checkedFilter && scope._settings.checkedFilter(modelItem)),
-                                disabled: modelItem.disabled === true,
-                                cssClass: modelItem.cssClass,
-                                showChildren: true
-                            };
-
-                            if (modelItem[scope._settings.childrenMember]) {
-                                item.children = [];
-                                for (var i = 0; i < modelItem[scope._settings.childrenMember].length; i++) {
-                                    var child = createDropDownModelItem(modelItem[scope._settings.childrenMember][i]);
-                                    child.parent = item;
-                                    item.children.push(child);
-                                }
-                            }
-
-                            return item;
-                        }
-
                         function getCheckedItems(items) {
                             var checkedItems = [];
                             var leafCheckedItems = [];
                             var leafCheckedNames = [];
-                            angular.forEach(items, function (item) {
-
+                            var length = items.length;
+                            for(var i = 0; i < length; i++)
+                            {
+                                var item = items[i];
                                 if (item.checked) {
                                     var cloneItem = angular.copy(item.model, {});
                                     delete cloneItem[scope._settings.childrenMember];
@@ -185,7 +188,7 @@
                                         leafCheckedNames.push(item.model[scope._settings.nameMember]);
                                     }
                                 }
-                            });
+                            }
 
                             return {
                                 leafNames: leafCheckedNames,
@@ -199,8 +202,10 @@
                             if (!sourceData) {
                                 return;
                             }
-                            for (var i = 0; i < sourceData.length; i++) {
-                                var item = createDropDownModelItem(sourceData[i]);
+                            var settings = scope._settings;
+                            var length = sourceData.length;
+                            for (var i = 0; i < length; i++) {
+                                var item = createDropDownModelItem(settings, sourceData[i]);
                                 items.push(item);
                             }
 
@@ -208,6 +213,10 @@
                         }
 
                         function getHeaderText(selectedItems) {
+                            if(angular.isArray(scope._settings.sourceData) === false || scope._settings.sourceData.length === 0)
+                            {
+                                return scope._textSettings.NoData;
+                            }
                             if (angular.isArray(_leafCheckedNames) === false || _leafCheckedNames.length === 0) {
                                 return scope._textSettings.NoItemChecked;
                             }
@@ -277,29 +286,36 @@
 
                             var sourceDataType = typeof scope._settings.sourceData;
 
+                            function startParseData(){
+                                setTimeout(function(){
+                                     parseData();
+
+                                    if (scope._settings.checkedAll === true) {
+                                        scope.toggleCheckAll(true);
+                                    }
+
+                                    scope.toggleCollapseExpanse(scope._settings.collapsedAll);
+                                    }, 100);
+                            }
+                            
                             if (sourceDataType === "string") // url
                             {
                                 $http.get(scope._settings.sourceData)
                                     .success(function (response) {
                                         scope._settings.sourceData = response;
 
-                                        parseData();
+                                        startParseData();
                                     });
                             } else if (sourceDataType === "function") // function
                             {
                                 scope._settings.sourceData = scope._settings.sourceData();
-                                parseData();
+                                startParseData();
                             } else {
-                                parseData();
+                                startParseData();
                             }
 
-                            if (scope._settings.checkedAll === true) {
-                                scope.toggleCheckAll(true);
-                            }
 
-                            scope.toggleCollapseExpanse(scope._settings.collapsedAll);
-
-                        }, true);
+                        });
 
                         scope.$watch("textSettings", function () {
                             var defaultTextSettings = {
@@ -308,7 +324,8 @@
                                 CollapseExpanse: "Collapse/Expanse",
                                 CollapseBranch: "Collapse/Expanse this branch",
                                 NoItemChecked: "Select options",
-                                ItemsSelected: "# selected"
+                                ItemsSelected: "# selected",
+                                NoData: "(No Data)"
                             };
 
                             scope._textSettings = angular.extend(defaultTextSettings, scope.textSettings);
@@ -323,7 +340,7 @@
                                 scope.header = getHeaderText(scope.selectedItems);
                                 modelCtrl.$setValidity('required', scope.valid());
                             }
-                        }, true);
+                        });
 
                         var popup = angular.element('<dropdowntree-popup></dropdowntree-popup>');
                         element.append($compile(popup)(scope));
