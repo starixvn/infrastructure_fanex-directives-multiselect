@@ -27,22 +27,22 @@ var data = [
 		},
 		{value:3, text: 'Africa'}
 	];
- data =[];
-for(var i = 0;i<100;i++)
-{
-    data.push({
-          value: i, 
-			text: i + 'Asia',
-			cssClass: "demo",
-			items:[
-				{
-				    value: i + "a", text: 'Southeast Asia',
-					items: [{ value: i + "aa", text: 'Vietnam'}]
-				},
-				{value: i + "b", text: 'Japan', checked: true}
-			]
-    });
-}
+// data =[];
+//for(var i = 0;i<100;i++)
+//{
+//    data.push({
+//          value: i, 
+//			text: i + 'Asia',
+//			cssClass: "demo",
+//			items:[
+//				{
+//				    value: i + "a", text: 'Southeast Asia',
+//					items: [{ value: i + "aa", text: 'Vietnam'}]
+//				},
+//				{value: i + "b", text: 'Japan', checked: true}
+//			]
+//    });
+//}
 
 var app = angular.module('DemoApp', ['fanex.dropdowntree']);
 app.config(function(dropdowntreeConfigProvider){
@@ -122,7 +122,7 @@ app.controller('DemoController', function ($scope) {
 	  itemFormatter: function(value, item){
 		if(item.items && item.items.length > 0)
 		{
-			return value + " (<mark>" + item.items.length + "</mark>)";
+			return value + " (" + item.items.length + ")";
 		}
 		
 		return value;
