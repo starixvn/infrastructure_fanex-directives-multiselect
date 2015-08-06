@@ -101,9 +101,10 @@
                 }
 
                 function createDropDownModelItem(settings, modelItem) {
+                    var itemLabel = modelItem[settings.nameMember];
                     var item = {
                         id: settings.idMember ? modelItem[settings.idMember] : undefined,
-                        label: modelItem[settings.nameMember].substr(0, settings.maxTextLength),
+                        label: itemLabel ? itemLabel.substr(0, settings.maxTextLength) : '',
                         model: modelItem,
                         checked: modelItem.checked === true ||
                             (settings.checkedFilter && settings.checkedFilter(modelItem)),
@@ -313,8 +314,6 @@
                             } else {
                                 startParseData();
                             }
-
-
                         });
 
                         scope.$watch("textSettings", function () {
@@ -329,7 +328,10 @@
                             };
 
                             scope._textSettings = angular.extend(defaultTextSettings, scope.textSettings);
-                            scope.header = getHeaderText(scope.selectedItems);
+                            if(scope._settings)
+                            {
+                                scope.header = getHeaderText(scope.selectedItems);
+                            }
                         }, true);
 
                         //watch model change
