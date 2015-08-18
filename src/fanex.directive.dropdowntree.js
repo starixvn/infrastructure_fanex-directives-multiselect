@@ -52,21 +52,6 @@
                     return found;
                 }
 
-                function setItemChecked(item, value) {
-                    if (item.disabled) {
-                        return;
-                    }
-
-                    item.checked = value;
-                    if (item.children) {
-                        for (var i = 0; i < item.children.length; i++) {
-                            setItemChecked(item.children[i], value);
-                        }
-                    }
-
-                    setParentChecked(item);
-                }
-
                 function setParentChecked(item) {
                     if (item.parent) {
                         var parent = item.parent;
@@ -139,7 +124,8 @@
                         ngOnCheckall: "&",
                         ngOnOpen: "&",
                         ngOnClose: "&",
-                        ngChange: "&"
+                        ngChange: "&",
+                        disabled: '=ngDisabled'
                     },
                     link: function (scope, element, attrs, modelCtrl) {
                         var required = attrs.required || attrs.ngRequired;
@@ -148,8 +134,8 @@
 
                         var _leafCheckedNames = [];
 
-                        scope._settings = null;
-                        scope._textSettings = null;
+                        scope._settings = scope._settings = angular.extend({}, dropdowntreeConfig);
+                        scope._textSettings = {};
 
                         scope.searchText = {
                             value: ""
@@ -158,7 +144,10 @@
                         scope.checkedAll = false;
                         scope.items = []; // dropdown model items
                         scope.header = "";
-                        scope.disabled = angular.isDefined(attrs.disabled) || $parse(attrs.ngDisabled)(scope);
+                        var _isWatchSelectedItems = true;
+                        var _isInnerCheckItem = false;
+                        
+                        // scope.disabled = angular.isDefined(attrs.disabled) || $parse(attrs.ngDisabled)(scope);
 
                         function getCheckedItems(items) {
                             var checkedItems = [];
@@ -196,6 +185,23 @@
                                 leafItems: leafCheckedItems,
                                 allItems: checkedItems
                             };
+                        }
+
+                        
+                        function setItemChecked(item, value) {
+                            if (item.disabled) {
+                                return;
+                            }
+                             _isInnerCheckItem = true;
+                            item.checked = value;
+                            if (item.children) {
+                                for (var i = 0; i < item.children.length; i++) {
+                                    setItemChecked(item.children[i], value);
+                                }
+                            }
+
+                            setParentChecked(item);
+                             _isInnerCheckItem = false;
                         }
 
                         function parseSourceData(sourceData) {
@@ -246,12 +252,13 @@
                             return header;
                         }
 
-                        function refreshViewValue(isCallSetViewValue) {
+                        function refreshViewValue(isRefreshSelectedItems) {
                             var data = getCheckedItems(scope.items);                            
-                            _leafCheckedNames = data.leafNames;
-                            scope.selectedItems = data.leafItems;
+                            _leafCheckedNames = data.leafNames;                            
                             scope.allSelectedItems = data.allItems;
-                            
+                            if(isRefreshSelectedItems){
+                                scope.selectedItems = data.leafItems;
+                            }
                         }
 
                         function parseData() {
@@ -266,12 +273,35 @@
                             scope.allSelectedItems = data.allItems;
                             scope.checkedAll = isAllItemsChecked(scope.items);
                         }
+                        
+                        function updateCheckedState(items, checkedItems) {   
+                            
+                            var idMember = scope._settings.idMember;
+                           angular.forEach(items, function (item) {
+                               var checked = false; 
+                               for(var i = 0; i < checkedItems.length; i++)
+                                {
+                                   if(item.id === checkedItems[i][idMember])
+                                   {
+                                       checked = true;
+                                       break;
+                                   }
+                                }
+                               
+                               item.checked = checked;
 
+                               if (item.children && item.children.length > 0) {
+                                    updateCheckedState(item.children, checkedItems);
+                               }
+                               setParentChecked(item);
+                            });
+                        }
+                        
                         // required validate
                         attrs.$observe('required', function (newVal) {
                             required = newVal;
                         });
-
+                        
                         scope.$watch("settings", function (newValue) {
                             if (!newValue) {
                                 return;
@@ -328,22 +358,31 @@
                             };
 
                             scope._textSettings = angular.extend(defaultTextSettings, scope.textSettings);
-                            if(scope._settings)
-                            {
-                                scope.header = getHeaderText(scope.selectedItems);
-                            }
+                            scope.header = getHeaderText(scope.selectedItems);
                         }, true);
 
                         //watch model change
                         scope.$watch("selectedItems", function (newVal) {
-                            if (angular.isDefined(newVal)) {
-                                //  scope.$eval(changeHandler);
+                            if (_isWatchSelectedItems === true && scope._settings && angular.isDefined(newVal)) {
+                                 _isWatchSelectedItems = false;
+                                
+                                if(_isInnerCheckItem === false)
+                                {
+                                    console.log(newVal);
+                                    updateCheckedState(scope.items, newVal);
+                                    refreshViewValue();
+                                }
+                                
                                 changeHandler();
+                                
                                 scope.header = getHeaderText(scope.selectedItems);
+
                                 modelCtrl.$setValidity('required', scope.valid());
+                                _isWatchSelectedItems = true;
                             }
                         });
-
+                        
+                        
                         var popup = angular.element('<dropdowntree-popup></dropdowntree-popup>');
                         element.append($compile(popup)(scope));
 
@@ -366,16 +405,14 @@
                             angular.forEach(scope.items, function (item) {
                                 setItemChecked(item, scope.checkedAll);
                             });
-                            refreshViewValue();
+                            refreshViewValue(true);
                             onCheckAllHandler();
                         };
 
-                        scope.checkItem = function (item) {                            
+                        scope.checkItem = function (item) {   
                             setItemChecked(item, !item.checked);
-                            refreshViewValue();
-                            scope.checkedAll = isAllItemsChecked(scope.items);
-
-                            modelCtrl.$setViewValue(scope.selectedItems);                              
+                            refreshViewValue(true);
+                            scope.checkedAll = isAllItemsChecked(scope.items); 
                         };
 
                         scope.getCollapseExpandClass = function (item) {
@@ -400,7 +437,7 @@
                                 item.showChildren = !scope.collapsedAll;
                             });
 
-                            refreshViewValue();
+                            refreshViewValue(true);
                         };
 
                         scope.filterSearchText = function (item) {

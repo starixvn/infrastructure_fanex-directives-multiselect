@@ -3,7 +3,7 @@
         <span class="pull-left">{{header}}</span> <span class="caret pull-right">
         </span>
     </button>
-     <ul ng-if="items.length > 0" class="dropdown-menu" style="width:{{_settings.width}}px">
+     <ul ng-if="items.length > 0" class="dropdown-menu" ng-style="{ 'width': _settings.width}">
         <li ng-if="_settings.hasFilter">
             <div>
                   <input type="text" class="filter" ng-model="searchText.value" autofocus="autofocus"
