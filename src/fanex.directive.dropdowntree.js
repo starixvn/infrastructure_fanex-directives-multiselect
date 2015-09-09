@@ -101,7 +101,7 @@
                     if (modelItem[settings.childrenMember]) {
                         item.children = [];
                         var children = modelItem[settings.childrenMember];
-                        var length = children.length;                                
+                        var length = children.length;
                         for (var i = 0; i < length; i++) {
                             var child = createDropDownModelItem(settings, children[i]);
                             child.parent = item;
@@ -111,7 +111,7 @@
 
                     return item;
                 }
-                
+
                 // RETURN 
                 return {
                     restrict: 'E',
@@ -146,7 +146,7 @@
                         scope.header = "";
                         var _isWatchSelectedItems = true;
                         var _isInnerCheckItem = false;
-                        
+
                         // scope.disabled = angular.isDefined(attrs.disabled) || $parse(attrs.ngDisabled)(scope);
 
                         function getCheckedItems(items) {
@@ -154,8 +154,7 @@
                             var leafCheckedItems = [];
                             var leafCheckedNames = [];
                             var length = items.length;
-                            for(var i = 0; i < length; i++)
-                            {
+                            for (var i = 0; i < length; i++) {
                                 var item = items[i];
                                 if (item.checked) {
                                     var cloneItem = angular.copy(item.model, {});
@@ -187,12 +186,12 @@
                             };
                         }
 
-                        
+
                         function setItemChecked(item, value) {
                             if (item.disabled) {
                                 return;
                             }
-                             _isInnerCheckItem = true;
+                            _isInnerCheckItem = true;
                             item.checked = value;
                             if (item.children) {
                                 for (var i = 0; i < item.children.length; i++) {
@@ -201,7 +200,7 @@
                             }
 
                             setParentChecked(item);
-                             _isInnerCheckItem = false;
+                            _isInnerCheckItem = false;
                         }
 
                         function parseSourceData(sourceData) {
@@ -220,8 +219,7 @@
                         }
 
                         function getHeaderText(selectedItems) {
-                            if(angular.isArray(scope._settings.sourceData) === false || scope._settings.sourceData.length === 0)
-                            {
+                            if (angular.isArray(scope._settings.sourceData) === false || scope._settings.sourceData.length === 0) {
                                 return scope._textSettings.NoData;
                             }
                             if (angular.isArray(_leafCheckedNames) === false || _leafCheckedNames.length === 0) {
@@ -253,10 +251,10 @@
                         }
 
                         function refreshViewValue(isRefreshSelectedItems) {
-                            var data = getCheckedItems(scope.items);                            
-                            _leafCheckedNames = data.leafNames;                            
+                            var data = getCheckedItems(scope.items);
+                            _leafCheckedNames = data.leafNames;
                             scope.allSelectedItems = data.allItems;
-                            if(isRefreshSelectedItems){
+                            if (isRefreshSelectedItems) {
                                 scope.selectedItems = data.leafItems;
                             }
                         }
@@ -273,35 +271,33 @@
                             scope.allSelectedItems = data.allItems;
                             scope.checkedAll = isAllItemsChecked(scope.items);
                         }
-                        
-                        function updateCheckedState(items, checkedItems) {   
-                            
-                            var idMember = scope._settings.idMember;
-                           angular.forEach(items, function (item) {
-                               var checked = false; 
-                               for(var i = 0; i < checkedItems.length; i++)
-                                {
-                                   if(item.id === checkedItems[i][idMember])
-                                   {
-                                       checked = true;
-                                       break;
-                                   }
-                                }
-                               
-                               item.checked = checked;
 
-                               if (item.children && item.children.length > 0) {
+                        function updateCheckedState(items, checkedItems) {
+
+                            var idMember = scope._settings.idMember;
+                            angular.forEach(items, function (item) {
+                                var checked = false;
+                                for (var i = 0; i < checkedItems.length; i++) {
+                                    if (item.id === checkedItems[i][idMember]) {
+                                        checked = true;
+                                        break;
+                                    }
+                                }
+
+                                item.checked = checked;
+
+                                if (item.children && item.children.length > 0) {
                                     updateCheckedState(item.children, checkedItems);
-                               }
-                               setParentChecked(item);
+                                }
+                                setParentChecked(item);
                             });
                         }
-                        
+
                         // required validate
                         attrs.$observe('required', function (newVal) {
                             required = newVal;
                         });
-                        
+
                         scope.$watch("settings", function (newValue) {
                             if (!newValue) {
                                 return;
@@ -317,18 +313,18 @@
 
                             var sourceDataType = typeof scope._settings.sourceData;
 
-                            function startParseData(){
-                                setTimeout(function(){
-                                     parseData();
+                            function startParseData() {
+                                setTimeout(function () {
+                                    parseData();
 
                                     if (scope._settings.checkedAll === true) {
                                         scope.toggleCheckAll(true);
                                     }
 
                                     scope.toggleCollapseExpanse(scope._settings.collapsedAll);
-                                    }, 100);
+                                }, 100);
                             }
-                            
+
                             if (sourceDataType === "string") // url
                             {
                                 $http.get(scope._settings.sourceData)
@@ -364,25 +360,24 @@
                         //watch model change
                         scope.$watch("selectedItems", function (newVal) {
                             if (_isWatchSelectedItems === true && scope._settings && angular.isDefined(newVal)) {
-                                 _isWatchSelectedItems = false;
-                                
-                                if(_isInnerCheckItem === false)
-                                {
-                                    console.log(newVal);
+                                _isWatchSelectedItems = false;
+
+                                if (_isInnerCheckItem === false) {
                                     updateCheckedState(scope.items, newVal);
                                     refreshViewValue();
+                                    scope.checkedAll = newVal.length === scope.items.length;
                                 }
-                                
+
                                 changeHandler();
-                                
+
                                 scope.header = getHeaderText(scope.selectedItems);
 
                                 modelCtrl.$setValidity('required', scope.valid());
                                 _isWatchSelectedItems = true;
                             }
                         });
-                        
-                        
+
+
                         var popup = angular.element('<dropdowntree-popup></dropdowntree-popup>');
                         element.append($compile(popup)(scope));
 
@@ -409,10 +404,10 @@
                             onCheckAllHandler();
                         };
 
-                        scope.checkItem = function (item) {   
+                        scope.checkItem = function (item) {
                             setItemChecked(item, !item.checked);
                             refreshViewValue(true);
-                            scope.checkedAll = isAllItemsChecked(scope.items); 
+                            scope.checkedAll = isAllItemsChecked(scope.items);
                         };
 
                         scope.getCollapseExpandClass = function (item) {
@@ -447,6 +442,10 @@
                         scope.clearSearchText = function () {
                             scope.searchText.value = "";
                             scope.focusSearchBox();
+                        };
+
+                        scope.touched = function () {
+                            modelCtrl.$setTouched();
                         };
                     }
                 };
@@ -507,7 +506,9 @@
 
                     scope.focusSearchBox = function focusSearchBox() {
                         var searchBox = dropdownElement.find('input')[0];
-                        searchBox.focus();
+                        if (searchBox) {
+                            searchBox.focus();
+                        }
                     };
                 }
             };
