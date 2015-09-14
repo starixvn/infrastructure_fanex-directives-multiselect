@@ -365,7 +365,10 @@
                                 if (_isInnerCheckItem === false) {
                                     updateCheckedState(scope.items, newVal);
                                     refreshViewValue();
-                                    scope.checkedAll = newVal.length === scope.items.length;
+									
+									if(newVal.length < scope.items.length){
+										scope.checkedAll =false;
+									}
                                 }
 
                                 changeHandler();
