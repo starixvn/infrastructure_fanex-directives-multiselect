@@ -35,8 +35,8 @@
                 }
             };
         })
-        .directive('dropdowntree', ['$parse', '$compile', '$http', '$filter', 'dropdowntreeConfig',
-            function ($parse, $compile, $http, $filter, dropdowntreeConfig) {
+        .directive('dropdowntree', ['$timeout', '$parse', '$compile', '$http', '$filter', 'dropdowntreeConfig',
+            function ($timeout, $parse, $compile, $http, $filter, dropdowntreeConfig) {
                 function containsText(item, searchText) {
                     var found = item.label.toLowerCase().indexOf(searchText.toLowerCase()) > -1;
 
@@ -314,7 +314,7 @@
                             var sourceDataType = typeof scope._settings.sourceData;
 
                             function startParseData() {
-                                setTimeout(function () {
+                                $timeout(function () {
                                     parseData();
 
                                     if (scope._settings.checkedAll === true) {
