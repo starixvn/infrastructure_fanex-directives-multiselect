@@ -138,6 +138,7 @@ app.controller('DemoController', function ($scope) {
 		CollapseExpanse: "Collapse/Expanse",
 		CollapseBranch: "Collapse/Expanse this branch",
 		NoItemChecked: "Please select options",
-		ItemsSelected: "# selected"
+		ItemsSelected: "# selected",
+		AllItemsSelected: "All Items selected"
 	}
 });

@@ -1,3 +1,11 @@
+/*!
+*  fanex.directive.dropdowntree  2016-10-10
+*  fanex.directive.dropdowntree - Angular DropdownTree is an AngularJS UI component (directive) which provides a filter box and hierarchical dropdown.
+*  https://gitlab.nexcel.vn/infrastructure/fanex-directives-multiselect
+*
+*  Version: 1.0.0.1 (2016-10-10)
+*  Document: http://10.18.200.209:8586/dropdowntree/index.html
+*/
 /*global angular */
 (function () {
     "use strict";
@@ -225,6 +233,10 @@
                             if (angular.isArray(_leafCheckedNames) === false || _leafCheckedNames.length === 0) {
                                 return scope._textSettings.NoItemChecked;
                             }
+                            if (scope.checkedAll && scope._textSettings.AllItemsSelected)
+                            {
+                                return scope._textSettings.AllItemsSelected;
+                            }
 
                             var header;
 
@@ -350,6 +362,7 @@
                                 CollapseBranch: "Collapse/Expanse this branch",
                                 NoItemChecked: "Select options",
                                 ItemsSelected: "# selected",
+                                AllItemsSelected: "",
                                 NoData: "(No Data)"
                             };
 
@@ -448,15 +461,18 @@
                         };
 
                         scope.touched = function () {
-                            modelCtrl.$setTouched();
+                            if(modelCtrl.$setTouched)
+                            {
+                                modelCtrl.$setTouched();
+                            }
                         };
                     }
                 };
             }
         ])
 
-    .directive('dropdowntreePopup', ['$document',
-        function ($document) {
+    .directive('dropdowntreePopup', ['$document','$timeout',
+        function ($document, $timeout) {
             return {
                 restrict: 'E',
                 replace: true,
@@ -508,9 +524,11 @@
                     }
 
                     scope.focusSearchBox = function focusSearchBox() {
-                        var searchBox = dropdownElement.find('input')[0];
+                        var searchBox = dropdownElement.find('input[type=text]')[0];
                         if (searchBox) {
-                            searchBox.focus();
+                            $timeout(function(){
+                                searchBox.focus();
+                            }, 0, false);          
                         }
                     };
                 }
